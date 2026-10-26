@@ -1,0 +1,49 @@
+{
+  "name": "Assistente de Investimentos - MVP",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "receber-clientes",
+        "responseMode": "onReceived",
+        "options": {}
+      },
+      "name": "Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [
+        240,
+        300
+      ],
+      "webhookId": "assistente-investimentos-webhook"
+    },
+    {
+      "parameters": {
+        "jsCode": "for (const item of $input.all()) {\n  const perfil = item.json.perfil;\n  let recomendacao = '';\n  \n  if (perfil === 'Conservador') {\n    recomendacao = 'Foco em renda fixa e segurança (Tesouro Direto, CDBs de liquidez diária).';\n  } else if (perfil === 'Moderado') {\n    recomendacao = 'Mix equilibrado entre renda fixa e fundos imobiliários/ações.';\n  } else if (perfil === 'Arrojado') {\n    recomendacao = 'Ênfase em ações, criptoativos e maior potencial de retorno de longo prazo.';\n  } else {\n    recomendacao = 'Perfil não mapeado.';\n  }\n  \n  item.json.recomendacao = recomendacao;\n}\nreturn $input.all();"
+      },
+      "name": "Gerar Recomendacao",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        460,
+        300
+      ]
+    }
+  ],
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Gerar Recomendacao",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  }
+}
